@@ -37,6 +37,16 @@ make && make install
 # 目录 mockcpp-install 就是我们需要的产物
 ```
 
+如果遇到`boost`库找不到的问题，可以安装：
+
+```shell
+sudo apt-get install boost
+
+# or
+sudo apt-get install libboost-all-dev
+
+```
+
 ## 基本用法
 
 ### 头文件引入
