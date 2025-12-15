@@ -16,14 +16,14 @@ dist/
 *.elf
 
 # Libraries
-*.lib
-*.a
-*.la
-*.lo
-*.so
-*.so.*
-*.dylib
-*.dll
+# *.lib
+# *.a
+# *.la
+# *.lo
+# *.so
+# *.so.*
+# *.dylib
+# *.dll
 
 # Executables
 *.exe
