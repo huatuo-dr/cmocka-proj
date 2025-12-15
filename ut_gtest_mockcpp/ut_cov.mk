@@ -28,7 +28,8 @@ GTEST_MOCKCPP_COV_SDK_LIB := $(GTEST_MOCKCPP_COV_OUTPUT_DIR)/libsdk_cov.a
 
 # UT specific flags for coverage build
 # Note: mockcpp uses runtime API hooking, no --wrap needed
-GTEST_MOCKCPP_COV_UT_CXXFLAGS := $(GTEST_MOCKCPP_COV_CXXFLAGS) -Isdk/include -I$(GTEST_MOCKCPP_GTEST_INC) -I$(GTEST_MOCKCPP_MOCKCPP_INC)
+# Use -isystem for third-party libraries to suppress their warnings
+GTEST_MOCKCPP_COV_UT_CXXFLAGS := $(GTEST_MOCKCPP_COV_CXXFLAGS) -Isdk/include -isystem $(GTEST_MOCKCPP_GTEST_INC) -isystem $(GTEST_MOCKCPP_MOCKCPP_INC)
 GTEST_MOCKCPP_COV_UT_LDFLAGS := $(GTEST_MOCKCPP_COV_LDFLAGS) -L$(GTEST_MOCKCPP_COV_OUTPUT_DIR) -L$(GTEST_MOCKCPP_GTEST_LIB) -L$(GTEST_MOCKCPP_MOCKCPP_LIB) \
     -lsdk_cov -lgtest -lmockcpp -lpthread
 

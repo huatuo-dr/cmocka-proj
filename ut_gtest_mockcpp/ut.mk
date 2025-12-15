@@ -22,7 +22,8 @@ GTEST_MOCKCPP_TEST_MULTI_CALC := $(DIST_DIR)/gtest_mockcpp_test_multi_calc
 GTEST_MOCKCPP_REPORT_DIR := $(BUILD_DIR)/ut-gtest-mockcpp-report
 
 # C++ compiler flags
-GTEST_MOCKCPP_CXXFLAGS := $(CXXFLAGS) -I$(SDK_INSTALL_INC_DIR) -I$(GTEST_MOCKCPP_GTEST_INC) -I$(GTEST_MOCKCPP_MOCKCPP_INC)
+# Use -isystem for third-party libraries to suppress their warnings
+GTEST_MOCKCPP_CXXFLAGS := $(CXXFLAGS) -I$(SDK_INSTALL_INC_DIR) -isystem $(GTEST_MOCKCPP_GTEST_INC) -isystem $(GTEST_MOCKCPP_MOCKCPP_INC)
 
 # Linker flags (no --wrap needed, mockcpp uses runtime API hooking)
 GTEST_MOCKCPP_LDFLAGS := -L$(SDK_INSTALL_LIB_DIR) -L$(GTEST_MOCKCPP_GTEST_LIB) -L$(GTEST_MOCKCPP_MOCKCPP_LIB) \
