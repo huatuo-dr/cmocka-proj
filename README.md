@@ -119,7 +119,7 @@ make clean         # 清理所有构建产物
 
 ## 📊 测试报告
 
-各框架测试报告位置：
+### 报告位置
 
 | 框架 | 测试报告 | 覆盖率报告 |
 |------|---------|-----------|
@@ -127,6 +127,45 @@ make clean         # 清理所有构建产物
 | Unity + fff | `build/ut-unity-report/` | `build/coverage-unity-report/` |
 | GoogleTest + GMock | `build/ut-gtest-report/` | `build/coverage-gtest-report/` |
 | GoogleTest + MockCpp | `build/ut-gtest-mockcpp-report/` | `build/coverage-gtest-mockcpp-report/` |
+
+### 报告生成机制对比
+
+| 特性 | CMocka | Unity+fff | GTest+GMock | GTest+MockCpp |
+|------|--------|-----------|-------------|---------------|
+| **原生输出格式** | XML (JUnit) | TXT | XML (JUnit) | XML (JUnit) |
+| **HTML 转换工具** | junit2html | junit2html | junit2html | junit2html |
+| **需要额外脚本** | ❌ | ✅ unity_to_junit.py | ❌ | ❌ |
+| **终端输出可读性** | ⭐⭐⭐ 良好 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 |
+| **HTML 报告可读性** | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 |
+
+### 报告生成流程
+
+```
+CMocka:
+  测试程序 → XML (CMOCKA_MESSAGE_OUTPUT=XML) → junit2html → HTML
+
+Unity + fff:
+  测试程序 → TXT → unity_to_junit.py → XML → junit2html → HTML
+
+GoogleTest:
+  测试程序 → XML (--gtest_output=xml:) → junit2html → HTML
+```
+
+### 覆盖率报告
+
+所有框架使用相同的覆盖率工具链：
+
+```
+源码编译 (--coverage) → 运行测试 → lcov (收集数据) → genhtml (生成 HTML)
+```
+
+### 第三方工具依赖
+
+| 工具 | 用途 | 安装方式 |
+|------|------|---------|
+| `junit2html` | XML → HTML 转换 | `pip install junit2html` |
+| `lcov` | 覆盖率数据收集 | `apt install lcov` |
+| `genhtml` | 覆盖率 HTML 生成 | 包含在 lcov 中 |
 
 ## 📚 框架对比
 
