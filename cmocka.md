@@ -65,29 +65,34 @@ make install
 ```text
 .
 ├── Makefile                    # 主Makefile
-├── README.md                   # 本文档
+├── README.md                   # 项目说明文档
+├── cmocka.md                   # 本文档（cmocka使用指南）
 ├── .gitignore                  # Git忽略文件
-├── 3rdparty/                   # 第三方库
-│   └── cmocka-2.0.0/           # cmocka源码
+├── 3rdparty/                   # 第三方库源码
+│   └── cmocka-2.0.0/           # cmocka源码（可选，用于自行编译）
 ├── sdk/                        # SDK库（被测代码）
 │   ├── sdk.mk                  # SDK编译规则
 │   ├── include/                # 头文件
 │   │   ├── calc.h              # 计算器模块
-│   │   └── greeting.h          # 问候模块
+│   │   ├── greeting.h          # 问候模块
+│   │   └── multi-calc.h        # 复合计算模块
 │   └── src/                    # 源代码
 │       ├── calc.c
-│       └── greeting.c
+│       ├── greeting.c
+│       └── multi-calc.c
 ├── application/                # 应用程序
 │   ├── application.mk          # 应用编译规则
 │   └── main.c                  # 主程序
-├── ut/                         # 单元测试
+├── ut_cmocka/                  # CMocka单元测试
 │   ├── ut.mk                   # 测试编译规则
+│   ├── ut_cov.mk               # 覆盖率编译规则
 │   ├── cmocka-install/         # cmocka库（已编译）
 │   │   ├── include/
 │   │   └── lib/
 │   └── src/                    # 测试源码
 │       ├── test_calc.c         # calc模块测试
-│       └── test_greeting.c     # greeting模块测试
+│       ├── test_greeting.c     # greeting模块测试
+│       └── test_multi_calc.c   # multi-calc模块测试（含Mock）
 ├── output/                     # 编译中间文件（自动生成）
 ├── build/                      # SDK安装目录（自动生成）
 └── dist/                       # 可执行文件输出（自动生成）
@@ -96,20 +101,20 @@ make install
 ## 🚀 构建命令
 
 ```shell
-make help          # 查看所有可用命令
-make sdk           # 编译SDK库
-make sdk_install   # 安装SDK到build目录
-make app           # 编译应用程序
-make run           # 运行应用程序
-make ut            # 编译、运行单元测试并生成报告
-make ut_build      # 仅编译单元测试（不运行）
-make ut_run        # 运行单元测试（输出到终端）
-make ut_report     # 生成测试报告（XML + HTML）
-make ut_cov        # 运行测试并生成覆盖率报告
-make ut_cov_run    # 仅运行覆盖率测试
-make ut_cov_report # 生成HTML覆盖率报告
-make clean         # 清理所有编译产物
-make clean-cov     # 清理覆盖率相关文件
+make help                 # 查看所有可用命令
+make sdk                  # 编译SDK库
+make sdk_install          # 安装SDK到build目录
+make app                  # 编译应用程序
+make run                  # 运行应用程序
+make ut_cmocka            # 编译、运行CMocka单元测试并生成报告
+make ut_cmocka_build      # 仅编译CMocka单元测试（不运行）
+make ut_cmocka_run        # 运行CMocka单元测试（输出到终端）
+make ut_cmocka_report     # 生成CMocka测试报告（XML + HTML）
+make ut_cmocka_cov        # 运行测试并生成覆盖率报告
+make ut_cmocka_cov_run    # 仅运行覆盖率测试
+make ut_cmocka_cov_report # 生成HTML覆盖率报告
+make clean                # 清理所有编译产物
+make clean-cmocka-cov     # 清理CMocka覆盖率相关文件
 ```
 
 ## 📝 cmocka基础教程
@@ -554,8 +559,8 @@ static void test_compare_mock_vs_real(void **state) {
 
 ```makefile
 # cmocka路径
-CMOCKA_INC := ut/cmocka-install/include
-CMOCKA_LIB := ut/cmocka-install/lib
+CMOCKA_INC := ut_cmocka/cmocka-install/include
+CMOCKA_LIB := ut_cmocka/cmocka-install/lib
 
 # 编译选项
 CFLAGS := -Wall -Wextra -g -I$(CMOCKA_INC) -I<你的头文件目录>
@@ -579,7 +584,7 @@ run_test: test_xxx
 
 ## 📊 测试输出示例
 
-运行 `make ut` 后的输出：
+运行 `make ut_cmocka` 后的输出：
 
 ```text
 ========================================
@@ -696,8 +701,8 @@ cd build/ut-report && python3 -m http.server 8080
 | Test Fixtures | test_greeting.c | test_setup, test_teardown |
 | **Mock测试** | test_multi_calc.c | will_return, mock_type, __wrap_ |
 | **混合测试** | test_multi_calc.c | __real_xxx, 动态切换Mock/真实函数 |
-| **XML报告** | ut.mk | CMOCKA_MESSAGE_OUTPUT=XML |
-| **HTML报告** | ut.mk | junit2html 生成可视化报告 |
+| **XML报告** | ut_cmocka/ut.mk | CMOCKA_MESSAGE_OUTPUT=XML |
+| **HTML报告** | ut_cmocka/ut.mk | junit2html 生成可视化报告 |
 
 ## 📊 代码覆盖率
 
@@ -737,14 +742,14 @@ genhtml --version
 
 ```bash
 # 完整流程：编译、运行测试、生成报告
-make ut_cov
+make ut_cmocka_cov
 
 # 分步执行
-make ut_cov_run      # 编译并运行覆盖率测试
-make ut_cov_report   # 生成HTML报告
+make ut_cmocka_cov_run      # 编译并运行覆盖率测试
+make ut_cmocka_cov_report   # 生成HTML报告
 
 # 清理覆盖率文件
-make clean-cov
+make clean-cmocka-cov
 ```
 
 ### 报告文件
@@ -760,7 +765,7 @@ build/coverage-report/
 │   ├── calc.c.gcov.html
 │   ├── greeting.c.gcov.html
 │   └── multi-calc.c.gcov.html
-└── ut/src/                    # 测试代码覆盖详情
+└── ut_cmocka/src/             # 测试代码覆盖详情
 ```
 
 ### 覆盖率指标
@@ -773,7 +778,7 @@ build/coverage-report/
 
 ### 实现原理
 
-`ut/ut_cov.mk` 的关键配置：
+`ut_cmocka/ut_cov.mk` 的关键配置：
 
 ```makefile
 # 覆盖率编译选项

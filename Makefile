@@ -34,6 +34,8 @@ include ut_gtest_gmock/ut.mk
 include ut_gtest_gmock/ut_cov.mk
 include ut_gtest_mockcpp/ut.mk
 include ut_gtest_mockcpp/ut_cov.mk
+include ut_cpputest/ut.mk
+include ut_cpputest/ut_cov.mk
 
 # Default target
 .PHONY: all
@@ -41,7 +43,7 @@ all: sdk
 
 # Run all unit tests (all frameworks)
 .PHONY: ut
-ut: ut_cmocka ut_unity ut_gtest ut_gtest_mockcpp
+ut: ut_cmocka ut_unity ut_gtest ut_gtest_mockcpp ut_cpputest
 	@echo ""
 	@echo "========================================"
 	@echo "All Unit Tests Completed!"
@@ -49,7 +51,7 @@ ut: ut_cmocka ut_unity ut_gtest ut_gtest_mockcpp
 
 # Run all coverage tests (all frameworks)
 .PHONY: ut_cov
-ut_cov: ut_cmocka_cov ut_unity_cov ut_gtest_cov ut_gtest_mockcpp_cov
+ut_cov: ut_cmocka_cov ut_unity_cov ut_gtest_cov ut_gtest_mockcpp_cov ut_cpputest_cov
 	@echo ""
 	@echo "========================================"
 	@echo "All Coverage Reports Generated!"
@@ -120,6 +122,18 @@ help:
 	@echo "  make ut_gtest_mockcpp_cov_run - Run coverage tests only"
 	@echo "  make ut_gtest_mockcpp_cov_report - Generate HTML coverage report"
 	@echo "  make clean-gtest-mockcpp-cov - Clean coverage artifacts"
+	@echo ""
+	@echo "  CppUTest unit tests:"
+	@echo "  make ut_cpputest      - Build and run CppUTest tests"
+	@echo "  make ut_cpputest_build - Build CppUTest tests only (without running)"
+	@echo "  make ut_cpputest_run  - Run CppUTest tests (terminal output)"
+	@echo "  make ut_cpputest_report - Generate CppUTest test reports"
+	@echo ""
+	@echo "  CppUTest code coverage:"
+	@echo "  make ut_cpputest_cov  - Run tests and generate coverage report"
+	@echo "  make ut_cpputest_cov_run - Run coverage tests only"
+	@echo "  make ut_cpputest_cov_report - Generate HTML coverage report"
+	@echo "  make clean-cpputest-cov - Clean coverage artifacts"
 	@echo ""
 	@echo "  make clean         - Remove all build artifacts"
 	@echo "  make help          - Display this help message"

@@ -19,13 +19,15 @@ cmocka-proj/
 ├── ut_unity_fff/             # Unity + fff 单元测试
 ├── ut_gtest_gmock/           # GoogleTest + GMock 单元测试
 ├── ut_gtest_mockcpp/         # GoogleTest + MockCpp 单元测试
+├── ut_cpputest/              # CppUTest 单元测试
 │
 ├── 3rdparty/                 # 第三方库源码
 │   ├── cmocka-2.0.0/
 │   ├── Unity-2.6.1/
 │   ├── fff-1.1/
 │   ├── googletest-1.17.0/
-│   └── mockcpp/
+│   ├── mockcpp/
+│   └── cpputest/
 │
 ├── build/                    # 构建中间产物
 ├── output/                   # 编译输出
@@ -40,6 +42,7 @@ cmocka-proj/
 | **Unity + fff** | 函数指针替换 | C | [unity_fff.md](unity_fff.md) |
 | **GoogleTest + GMock** | 链接时 `--wrap` | C++ | [gtest_gmock.md](gtest_gmock.md) |
 | **GoogleTest + MockCpp** | 运行时 Hook | C++ | [gtest_mockcpp.md](gtest_mockcpp.md) |
+| **CppUTest** | 链接时 `--wrap` + Mock API | C++ | [cpputest.md](cpputest.md) |
 
 ## 🔧 SDK 模块说明
 
@@ -109,6 +112,10 @@ make ut_gtest_cov          # 运行测试并生成覆盖率报告
 # GoogleTest + MockCpp 测试
 make ut_gtest_mockcpp      # 运行测试并生成报告
 make ut_gtest_mockcpp_cov  # 运行测试并生成覆盖率报告
+
+# CppUTest 测试
+make ut_cpputest           # 运行测试并生成报告
+make ut_cpputest_cov       # 运行测试并生成覆盖率报告
 ```
 
 ### 清理
@@ -127,16 +134,17 @@ make clean         # 清理所有构建产物
 | Unity + fff | `build/ut-unity-report/` | `build/coverage-unity-report/` |
 | GoogleTest + GMock | `build/ut-gtest-report/` | `build/coverage-gtest-report/` |
 | GoogleTest + MockCpp | `build/ut-gtest-mockcpp-report/` | `build/coverage-gtest-mockcpp-report/` |
+| CppUTest | `build/ut-cpputest-report/` | `build/coverage-cpputest-report/` |
 
 ### 报告生成机制对比
 
-| 特性 | CMocka | Unity+fff | GTest+GMock | GTest+MockCpp |
-|------|--------|-----------|-------------|---------------|
-| **原生输出格式** | XML (JUnit) | TXT | XML (JUnit) | XML (JUnit) |
-| **HTML 转换工具** | junit2html | junit2html | junit2html | junit2html |
-| **需要额外脚本** | ❌ | ✅ unity_to_junit.py | ❌ | ❌ |
-| **终端输出可读性** | ⭐⭐⭐ 良好 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 |
-| **HTML 报告可读性** | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 |
+| 特性 | CMocka | Unity+fff | GTest+GMock | GTest+MockCpp | CppUTest |
+|------|--------|-----------|-------------|---------------|----------|
+| **原生输出格式** | XML (JUnit) | TXT | XML (JUnit) | XML (JUnit) | XML (JUnit) |
+| **HTML 转换工具** | junit2html | junit2html | junit2html | junit2html | junit2html |
+| **需要额外脚本** | ❌ | ✅ unity_to_junit.py | ❌ | ❌ | ❌ |
+| **终端输出可读性** | ⭐⭐⭐ 良好 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 |
+| **HTML 报告可读性** | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 |
 
 ### 报告生成流程
 
@@ -149,6 +157,9 @@ Unity + fff:
 
 GoogleTest:
   测试程序 → XML (--gtest_output=xml:) → junit2html → HTML
+
+CppUTest:
+  测试程序 → XML (-ojunit) → junit2html → HTML
 ```
 
 ### 覆盖率报告
@@ -169,15 +180,16 @@ GoogleTest:
 
 ## 📚 框架对比
 
-| 特性 | CMocka | Unity+fff | GTest+GMock | GTest+MockCpp |
-|------|--------|-----------|-------------|---------------|
-| 语言 | C | C | C++ | C++ |
-| Mock 机制 | `--wrap` | 函数指针 | `--wrap` | 运行时 Hook |
-| 无需链接选项 | ❌ | ✅ | ❌ | ✅ |
-| 调用真实函数 | `__real_` | 保存原指针 | `__real_` | 不 MOCKER 即可 |
-| 参数匹配 | 手动 | 手动 | ✅ 自动 | ✅ 自动 |
-| 调用次数验证 | 手动 | 手动 | ✅ 自动 | ✅ 自动 |
-| 学习曲线 | 低 | 低 | 中 | 中 |
+| 特性 | CMocka | Unity+fff | GTest+GMock | GTest+MockCpp | CppUTest |
+|------|--------|-----------|-------------|---------------|----------|
+| 语言 | C | C | C++ | C++ | C++ |
+| Mock 机制 | `--wrap` | 函数指针 | `--wrap` | 运行时 Hook | `--wrap` + Mock API |
+| 无需链接选项 | ❌ | ✅ | ❌ | ✅ | ❌ |
+| 调用真实函数 | `__real_` | 保存原指针 | `__real_` | 不 MOCKER 即可 | `__real_` |
+| 参数匹配 | 手动 | 手动 | ✅ 自动 | ✅ 自动 | ✅ 自动 |
+| 调用次数验证 | 手动 | 手动 | ✅ 自动 | ✅ 自动 | ✅ 自动 |
+| 内存泄漏检测 | ❌ | ❌ | ❌ | ❌ | ✅ 内置 |
+| 学习曲线 | 低 | 低 | 中 | 中 | 中 |
 
 ## 📖 详细文档
 
@@ -185,6 +197,7 @@ GoogleTest:
 - [Unity + fff 使用指南](unity_fff.md) - Unity 和 fff 框架详细说明
 - [GoogleTest + GMock 使用指南](gtest_gmock.md) - GoogleTest 和 GMock 详细说明
 - [GoogleTest + MockCpp 使用指南](gtest_mockcpp.md) - GoogleTest 和 MockCpp 详细说明
+- [CppUTest 使用指南](cpputest.md) - CppUTest 框架详细说明（含内存泄漏检测）
 
 ## 🛠️ 环境要求
 
