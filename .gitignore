@@ -9,6 +9,7 @@ dist/
 3rdparty/googletest-*/
 3rdparty/mockcpp*/
 3rdparty/cpputest*/
+3rdparty/check*/
 
 # Object files
 *.o

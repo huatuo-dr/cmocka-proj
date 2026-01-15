@@ -30,6 +30,7 @@ sudo apt-get install cpputest
 ### 独立安装
 
 ```shell
+# commit: b6d49e4846963d40eb8e5ff24228e63ccf2221d8
 git clone https://github.com/cpputest/cpputest.git
 cd cpputest
 ```
