@@ -1,0 +1,11 @@
+prefix=/home/huatuo/github/clang-ut-tools/3rdparty/Catch2/build/catch2-install
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: Catch2
+Description: A modern, C++-native, test framework for C++14 and above
+URL: https://github.com/catchorg/Catch2
+Version: 3.12.0
+Cflags: -I${includedir}
+Libs: -L${libdir} -lCatch2

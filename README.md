@@ -21,6 +21,7 @@ cmocka-proj/
 ├── ut_gtest_mockcpp/         # GoogleTest + MockCpp 单元测试
 ├── ut_cpputest/              # CppUTest 单元测试
 ├── ut_check/                 # Check 单元测试
+├── ut_catch2/                # Catch2 单元测试
 │
 ├── 3rdparty/                 # 第三方库源码
 │   ├── cmocka-2.0.0/
@@ -29,7 +30,8 @@ cmocka-proj/
 │   ├── googletest-1.17.0/
 │   ├── mockcpp/
 │   ├── cpputest/
-│   └── check/
+│   ├── check/
+│   └── Catch2/
 │
 ├── build/                    # 构建中间产物
 ├── output/                   # 编译输出
@@ -46,6 +48,7 @@ cmocka-proj/
 | **GoogleTest + MockCpp** | 运行时 Hook | C++ | [gtest_mockcpp.md](gtest_mockcpp.md) |
 | **CppUTest** | 链接时 `--wrap` + Mock API | C++ | [cpputest.md](cpputest.md) |
 | **Check** | 链接时 `--wrap` | C | [check.md](check.md) |
+| **Catch2** | 链接时 `--wrap` | C++ | [catch2.md](catch2.md) |
 
 ## 🔧 SDK 模块说明
 
@@ -63,8 +66,8 @@ int calc_divide(int a, int b);    // 除法
 ### greeting 模块
 问候消息函数：
 ```c
-const char* greeting_hello(const char* name);
-const char* greeting_goodbye(const char* name);
+const char* say_hello(const char* name);
+const char* say_goodbye(const char* name);
 ```
 
 ### multi-calc 模块
@@ -123,6 +126,10 @@ make ut_cpputest_cov       # 运行测试并生成覆盖率报告
 # Check 测试
 make ut_check              # 运行测试并生成报告
 make ut_check_cov          # 运行测试并生成覆盖率报告
+
+# Catch2 测试
+make ut_catch2             # 运行测试并生成报告
+make ut_catch2_cov         # 运行测试并生成覆盖率报告
 ```
 
 ### 清理
@@ -143,16 +150,17 @@ make clean         # 清理所有构建产物
 | GoogleTest + MockCpp | `build/ut-gtest-mockcpp-report/` | `build/coverage-gtest-mockcpp-report/` |
 | CppUTest | `build/ut-cpputest-report/` | `build/coverage-cpputest-report/` |
 | Check | `build/ut-check-report/` | `build/coverage-check-report/` |
+| Catch2 | `build/ut-catch2-report/` | `build/coverage-catch2-report/` |
 
 ### 报告生成机制对比
 
-| 特性 | CMocka | Unity+fff | GTest+GMock | GTest+MockCpp | CppUTest | Check |
-|------|--------|-----------|-------------|---------------|----------|-------|
-| **原生输出格式** | XML (JUnit) | TXT | XML (JUnit) | XML (JUnit) | XML (JUnit) | XML |
-| **HTML 转换工具** | junit2html | junit2html | junit2html | junit2html | junit2html | junit2html |
-| **需要额外脚本** | ❌ | ✅ unity_to_junit.py | ❌ | ❌ | ❌ | ❌ |
-| **终端输出可读性** | ⭐⭐⭐ 良好 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐ 良好 |
-| **HTML 报告可读性** | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 |
+| 特性 | CMocka | Unity+fff | GTest+GMock | GTest+MockCpp | CppUTest | Check | Catch2 |
+|------|--------|-----------|-------------|---------------|----------|-------|--------|
+| **原生输出格式** | XML (JUnit) | TXT | XML (JUnit) | XML (JUnit) | XML (JUnit) | XML | XML (JUnit) |
+| **HTML 转换工具** | junit2html | junit2html | junit2html | junit2html | junit2html | junit2html | junit2html |
+| **需要额外脚本** | ❌ | ✅ unity_to_junit.py | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **终端输出可读性** | ⭐⭐⭐ 良好 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐ 良好 | ⭐⭐⭐⭐ 优秀 |
+| **HTML 报告可读性** | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐ 优秀 |
 
 ### 报告生成流程
 
@@ -171,6 +179,9 @@ CppUTest:
 
 Check:
   测试程序 → XML (CK_XML_FILE=) → junit2html → HTML
+
+Catch2:
+  测试程序 → XML (--reporter JUnit --out) → junit2html → HTML
 ```
 
 ### 覆盖率报告
@@ -191,19 +202,21 @@ Check:
 
 ## 📚 框架对比
 
-| 特性 | CMocka | Unity+fff | GTest+GMock | GTest+MockCpp | CppUTest | Check |
-|------|--------|-----------|-------------|---------------|----------|-------|
-| 语言 | C | C | C++ | C++ | C++ | C |
-| Mock 机制 | `--wrap` | 函数指针 | `--wrap` | 运行时 Hook | `--wrap` + Mock API | `--wrap` |
-| 无需链接选项 | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ |
-| 调用真实函数 | `__real_` | 保存原指针 | `__real_` | 不 MOCKER 即可 | `__real_` | `__real_` |
-| 参数匹配 | 手动 | 手动 | ✅ 自动 | ✅ 自动 | ✅ 自动 | 手动 |
-| 调用次数验证 | 手动 | 手动 | ✅ 自动 | ✅ 自动 | ✅ 自动 | 手动 |
-| 内存泄漏检测 | ❌ | ❌ | ❌ | ❌ | ✅ 内置 | ❌ |
-| Fork 隔离 | ⚠️ 可选 | ❌ | ❌ | ❌ | ❌ | ✅ 默认 |
-| 信号/退出测试 | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| 代码生成工具 | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ checkmk |
-| 学习曲线 | 低 | 低 | 中 | 中 | 中 | 低 |
+| 特性 | CMocka | Unity+fff | GTest+GMock | GTest+MockCpp | CppUTest | Check | Catch2 |
+|------|--------|-----------|-------------|---------------|----------|-------|--------|
+| 语言 | C | C | C++ | C++ | C++ | C | C++ |
+| Mock 机制 | `--wrap` | 函数指针 | `--wrap` | 运行时 Hook | `--wrap` + Mock API | `--wrap` | `--wrap` |
+| 无需链接选项 | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| 调用真实函数 | `__real_` | 保存原指针 | `__real_` | 不 MOCKER 即可 | `__real_` | `__real_` | `__real_` |
+| 参数匹配 | 手动 | 手动 | ✅ 自动 | ✅ 自动 | ✅ 自动 | 手动 | 手动 |
+| 调用次数验证 | 手动 | 手动 | ✅ 自动 | ✅ 自动 | ✅ 自动 | 手动 | 手动 |
+| 内存泄漏检测 | ❌ | ❌ | ❌ | ❌ | ✅ 内置 | ❌ | ❌ |
+| Fork 隔离 | ⚠️ 可选 | ❌ | ❌ | ❌ | ❌ | ✅ 默认 | ❌ |
+| 信号/退出测试 | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
+| 代码生成工具 | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ checkmk | ❌ |
+| SECTION 机制 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| BDD 语法 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ 内置 |
+| 学习曲线 | 低 | 低 | 中 | 中 | 中 | 低 | 低 |
 
 ## 📖 详细文档
 
@@ -213,6 +226,7 @@ Check:
 - [GoogleTest + MockCpp 使用指南](gtest_mockcpp.md) - GoogleTest 和 MockCpp 详细说明
 - [CppUTest 使用指南](cpputest.md) - CppUTest 框架详细说明（含内存泄漏检测）
 - [Check 使用指南](check.md) - Check 框架详细说明（含 checkmk 代码生成、信号/退出值测试）
+- [Catch2 使用指南](catch2.md) - Catch2 框架详细说明（含 SECTION 和 BDD 语法）
 
 ## 🛠️ 环境要求
 

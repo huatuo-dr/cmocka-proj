@@ -10,6 +10,7 @@ dist/
 3rdparty/mockcpp*/
 3rdparty/cpputest*/
 3rdparty/check*/
+3rdparty/Catch2*/
 
 # Object files
 *.o
