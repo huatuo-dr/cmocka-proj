@@ -40,6 +40,8 @@ include ut_check/ut.mk
 include ut_check/ut_cov.mk
 include ut_catch2/ut.mk
 include ut_catch2/ut_cov.mk
+include ut_doctest/ut.mk
+include ut_doctest/ut_cov.mk
 
 # Default target
 .PHONY: all
@@ -47,7 +49,7 @@ all: sdk
 
 # Run all unit tests (all frameworks)
 .PHONY: ut
-ut: ut_cmocka ut_unity ut_gtest ut_gtest_mockcpp ut_cpputest ut_check ut_catch2
+ut: ut_cmocka ut_unity ut_gtest ut_gtest_mockcpp ut_cpputest ut_check ut_catch2 ut_doctest
 	@echo ""
 	@echo "========================================"
 	@echo "All Unit Tests Completed!"
@@ -55,7 +57,7 @@ ut: ut_cmocka ut_unity ut_gtest ut_gtest_mockcpp ut_cpputest ut_check ut_catch2
 
 # Run all coverage tests (all frameworks)
 .PHONY: ut_cov
-ut_cov: ut_cmocka_cov ut_unity_cov ut_gtest_cov ut_gtest_mockcpp_cov ut_cpputest_cov ut_check_cov ut_catch2_cov
+ut_cov: ut_cmocka_cov ut_unity_cov ut_gtest_cov ut_gtest_mockcpp_cov ut_cpputest_cov ut_check_cov ut_catch2_cov ut_doctest_cov
 	@echo ""
 	@echo "========================================"
 	@echo "All Coverage Reports Generated!"
@@ -162,6 +164,18 @@ help:
 	@echo "  make ut_catch2_cov_run - Run coverage tests only"
 	@echo "  make ut_catch2_cov_report - Generate HTML coverage report"
 	@echo "  make clean-catch2-cov - Clean coverage artifacts"
+	@echo ""
+	@echo "  doctest unit tests:"
+	@echo "  make ut_doctest      - Build and run doctest tests"
+	@echo "  make ut_doctest_build - Build doctest tests only (without running)"
+	@echo "  make ut_doctest_run  - Run doctest tests (terminal output)"
+	@echo "  make ut_doctest_report - Generate doctest test reports"
+	@echo ""
+	@echo "  doctest code coverage:"
+	@echo "  make ut_doctest_cov  - Run tests and generate coverage report"
+	@echo "  make ut_doctest_cov_run - Run coverage tests only"
+	@echo "  make ut_doctest_cov_report - Generate HTML coverage report"
+	@echo "  make clean-doctest-cov - Clean coverage artifacts"
 	@echo ""
 	@echo "  make clean         - Remove all build artifacts"
 	@echo "  make help          - Display this help message"
