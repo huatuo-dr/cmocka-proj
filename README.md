@@ -244,6 +244,44 @@ doctest:
 - [Catch2 使用指南](catch2.md) - Catch2 框架详细说明（含 SECTION 和 BDD 语法）
 - [doctest 使用指南](doctest.md) - doctest 框架详细说明（含 SUBCASE、BDD、Test Suites、Decorators）
 
+## 🎬 交互式演示 (Remotion)
+
+本项目包含一个基于 [Remotion](https://www.remotion.dev/) 开发的交互式视频演示系统，用于直观地展示各框架的特性对比。
+
+### 🚀 运行方式
+
+1. 进入演示目录：
+   ```bash
+   cd remotion-video
+   ```
+2. 安装依赖：
+   ```bash
+   npm install
+   ```
+3. 启动交互式播放器：
+   ```bash
+   npm start
+   ```
+   启动后在浏览器打开 `http://localhost:5173`。
+
+### 🎮 交互控制
+
+演示支持手动翻页，方便讲解：
+- **下一页**: 键盘 `Right Arrow` (➡️) 或点击界面 **[下一页]** 按钮。
+- **上一页**: 键盘 `Left Arrow` (⬅️) 或点击界面 **[上一页]** 按钮。
+- **播放/暂停**: 键盘 `Space` (空格) 或点击中心播放按钮。
+
+> [!TIP]
+> 切换章节后会自动播放，并在该章节内容结束时自动暂停，等待翻页。
+
+### 🎥 导出视频
+
+如果需要导出完整的 MP4 视频文件：
+```bash
+npx remotion render MainVideo out/video.mp4
+```
+
+
 ## 🛠️ 环境要求
 
 - GCC / G++
