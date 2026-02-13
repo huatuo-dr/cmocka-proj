@@ -113,20 +113,15 @@ export const Composition: React.FC = () => {
         <ContendersSlide />
       </Sequence>
 
-      {/* 3. Matrix page 1 */}
+      {/* 3. Comparison matrix (single page) */}
       <Sequence from={SLIDE_TIMESTAMPS[2]} durationInFrames={slideDuration(2)}>
-        <ComparisonTable page={0} />
+        <ComparisonTable />
       </Sequence>
 
-      {/* 4. Matrix page 2 */}
-      <Sequence from={SLIDE_TIMESTAMPS[3]} durationInFrames={slideDuration(3)}>
-        <ComparisonTable page={1} />
-      </Sequence>
-
-      {/* 5-20: Frameworks (2 slides each: overview + code) */}
+      {/* 4-19: Frameworks (2 slides each: overview + code) */}
       {FRAMEWORKS.map((framework, index) => {
-        const overviewIdx = 4 + index * 2;   // slide index for overview
-        const codeIdx = 4 + index * 2 + 1;   // slide index for code
+        const overviewIdx = 3 + index * 2;   // slide index for overview
+        const codeIdx = 3 + index * 2 + 1;   // slide index for code
 
         return (
           <div key={framework.id}>

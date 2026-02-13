@@ -2,14 +2,12 @@ import React from 'react';
 import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion';
 import { COMPARISON_FEATURES, FRAMEWORKS } from '../data/frameworks';
 
-// Split into two pages: first 6 rows and last 6 rows
-export const ComparisonTable: React.FC<{ page: number }> = ({ page }) => {
+// Display all comparison features in a single table
+export const ComparisonTable: React.FC = () => {
     const frame = useCurrentFrame();
     const opacity = interpolate(frame, [0, 20], [0, 1], { extrapolateRight: 'clamp' });
 
-    const pageSize = 6;
-    const startIdx = page * pageSize;
-    const rows = COMPARISON_FEATURES.slice(startIdx, startIdx + pageSize);
+    const rows = COMPARISON_FEATURES;
     const frameworkIds = FRAMEWORKS.map((f) => f.id);
     const frameworkNames = FRAMEWORKS.map((f) => f.name);
 
@@ -19,22 +17,22 @@ export const ComparisonTable: React.FC<{ page: number }> = ({ page }) => {
                 backgroundColor: '#0F172A',
                 color: 'white',
                 fontFamily: 'Inter, sans-serif',
-                padding: 50,
+                padding: '30px 40px',
                 opacity,
             }}
         >
             {/* Title */}
-            <h1 style={{ textAlign: 'center', fontSize: 48, margin: '0 0 30px 0', color: '#93C5FD' }}>
-                📊 框架对比矩阵 {page === 0 ? '(上)' : '(下)'}
+            <h1 style={{ textAlign: 'center', fontSize: 40, margin: '0 0 20px 0', color: '#93C5FD' }}>
+                📊 框架对比矩阵
             </h1>
 
             {/* Table */}
             <div
                 style={{
                     display: 'grid',
-                    gridTemplateColumns: `160px repeat(${frameworkIds.length}, 1fr)`,
+                    gridTemplateColumns: `140px repeat(${frameworkIds.length}, 1fr)`,
                     gap: 0,
-                    fontSize: 18,
+                    fontSize: 15,
                     width: '100%',
                 }}
             >
@@ -43,15 +41,15 @@ export const ComparisonTable: React.FC<{ page: number }> = ({ page }) => {
                     特性
                 </div>
                 {frameworkNames.map((name) => (
-                    <div key={name} style={{ ...cellStyle, backgroundColor: '#1E3A5F', fontWeight: 'bold', color: '#93C5FD', fontSize: 15 }}>
+                    <div key={name} style={{ ...cellStyle, backgroundColor: '#1E3A5F', fontWeight: 'bold', color: '#93C5FD', fontSize: 13 }}>
                         {name}
                     </div>
                 ))}
 
                 {/* Data rows */}
                 {rows.map((row, rowIdx) => {
-                    const rowDelay = rowIdx * 4;
-                    const rowOpacity = interpolate(frame, [20 + rowDelay, 35 + rowDelay], [0, 1], {
+                    const rowDelay = rowIdx * 3;
+                    const rowOpacity = interpolate(frame, [15 + rowDelay, 28 + rowDelay], [0, 1], {
                         extrapolateRight: 'clamp',
                     });
                     const bgColor = rowIdx % 2 === 0 ? '#1E293B' : '#0F172A';
@@ -65,7 +63,7 @@ export const ComparisonTable: React.FC<{ page: number }> = ({ page }) => {
                                 const val = row.values[id] || '-';
                                 const color = val.startsWith('✅') ? '#4ADE80' : val.startsWith('❌') ? '#F87171' : val.startsWith('⚠️') ? '#FBBF24' : '#E2E8F0';
                                 return (
-                                    <div key={id} style={{ ...cellStyle, backgroundColor: bgColor, color, opacity: rowOpacity, fontSize: 16 }}>
+                                    <div key={id} style={{ ...cellStyle, backgroundColor: bgColor, color, opacity: rowOpacity, fontSize: 14 }}>
                                         {val}
                                     </div>
                                 );
@@ -79,7 +77,7 @@ export const ComparisonTable: React.FC<{ page: number }> = ({ page }) => {
 };
 
 const cellStyle: React.CSSProperties = {
-    padding: '12px 8px',
+    padding: '7px 6px',
     borderBottom: '1px solid #334155',
     textAlign: 'center',
     display: 'flex',
